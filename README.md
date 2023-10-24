@@ -1,5 +1,10 @@
 # Plotting horizon and source lines with pslines
 
+## Import module
+```
+from pslines import *
+```
+
 ## Horizon line
 
 #### Step 1: Make horizon line object
