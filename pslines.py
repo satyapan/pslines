@@ -66,8 +66,12 @@ class get_horizon:
         self.factor_cosmo = ((cosmo.comoving_transverse_distance(self.z)/((const.c*(1+self.z)**2)/(cosmo.H(self.z)*1.4204057e9*u.Hz))).to(u.Hz).value)/freq_cen
     
     def get_factor_lst(self, lst):
-        return (1+np.sqrt(1-(np.sin(self.lat)*np.sin(self.dec0)+np.cos(self.lat)*np.cos(self.dec0)*np.cos(lst-self.ra0))**2))/(np.sin(self.lat)*np.sin(self.dec0)+np.cos(self.lat)*np.cos(self.dec0)*np.cos(lst-self.ra0))
-    
+        factor = (1+np.sqrt(1-(np.sin(self.lat)*np.sin(self.dec0)+np.cos(self.lat)*np.cos(self.dec0)*np.cos(lst-self.ra0))**2))/(np.sin(self.lat)*np.sin(self.dec0)+np.cos(self.lat)*np.cos(self.dec0)*np.cos(lst-self.ra0))
+        if factor < 0:
+            raise ValueError('Phase Center goes below the horizon!')
+        else:
+            return factor
+        
     def get_factor_max(self, N=100):
         utc_start = time_to_h(self.utc[0])
         utc_end = time_to_h(self.utc[1])
@@ -141,12 +145,12 @@ class get_horizon:
             kpar_list = self.get_horizon_lst(kper_list)
             kargs.setdefault('color', 'black')
             kargs.setdefault('linestyle', 'solid')
-            kargs.setdefault('linewidth', 2)    
+            kargs.setdefault('linewidth', 3)    
         elif kind == 'full':
             kpar_list = self.get_horizon_full(kper_list)
             kargs.setdefault('color', 'red')
             kargs.setdefault('linestyle', 'dashed')
-            kargs.setdefault('linewidth', 2)
+            kargs.setdefault('linewidth', 3)
         elif kind == 'flat':
             kpar_list = self.get_horizon_flat(kper_list)
             kargs.setdefault('color', 'black')
@@ -158,7 +162,30 @@ class get_horizon:
             ax.plot(kper_list, kpar_list, **kargs)
         else:
             print('Full synthesis line is vertical!')
-
+            
+    def get_line(self, kper_list, kind='lst', utc=None, date=None):
+        """
+        Return k_parallel values for the horizon line.
+        
+        Arguments:
+        kper_list, kind, date, utc: Same description as plot function
+        """
+        if kind=='lst' and (utc==None or date==None):
+            raise ValueError("Argument utc and date are necessary if using kind='lst'")
+        self.utc = utc
+        self.date = date
+        if kind == 'lst':
+            kpar_list = self.get_horizon_lst(kper_list)
+        elif kind == 'full':
+            kpar_list = self.get_horizon_full(kper_list)
+        elif kind == 'flat':
+            kpar_list = self.get_horizon_flat(kper_list)
+        else:
+            raise ValueError('kind = "lst"/"full"/"flat"')
+        if kind != 'full' or abs(self.dec0) > np.pi/2-abs(self.lat):
+            return kpar_list
+        else:
+            print('Full synthesis line is vertical!')
 
 class get_source:
     """
@@ -231,7 +258,7 @@ class get_source:
     def get_source_flat(self, kper_list):
         angle = angular_distance(self.ra,self.dec,self.ra0,self.dec0)
         return self.factor_cosmo*np.array(kper_list)*np.sin(angle)
-    
+        
     def plot(self, kper_list, kind='lst', ax=None, utc=None, date=None, **kargs):
         """
         Plot source line.
@@ -275,5 +302,29 @@ class get_source:
             kargs.setdefault('linestyle', 'dotted')
             kargs.setdefault('linewidth', 2)    
             ax.plot(kper_list, kpar_list, **kargs)             
+        else:
+            raise ValueError('kind = "lst"/flat"')
+            
+    def get_line(self, kper_list, kind='lst', utc=None, date=None):
+        """
+        Return k_parallel values for the source line.
+        
+        Arguments:
+        kper_list, kind, date, utc: Same description as plot function
+        """
+        if kind=='lst' and (utc==None or date==None):
+            raise ValueError("Argument utc and date are necessary if using kind='lst'")
+        self.utc = utc
+        self.date = date
+        if kind == 'lst':
+            if isinstance(self.utc, tuple):
+                kpar_list_min, kpar_list_max = self.get_source_range(kper_list)
+                return kpar_list_min, kpar_list_max
+            else:
+                kpar_list = self.get_source_lst(kper_list)
+                return kpar_list
+        elif kind == 'flat':
+            kpar_list = self.get_source_flat(kper_list)
+            return kpar_list
         else:
             raise ValueError('kind = "lst"/flat"')
