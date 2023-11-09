@@ -30,7 +30,7 @@ def time_to_h(time_str):
         return total_hours
 
 def utc_to_lst(utc, date, lat, lon):
-    loc = EarthLocation(lat=lat*u.deg, lon=lon*u.deg, height=0*u.m)
+    loc = EarthLocation(lat=lat*u.rad, lon=lon*u.rad, height=0*u.m)
     time = date+'T'+dec_to_str(utc)
     t = Time(time, scale='utc', location=loc)
     return t.sidereal_time('mean').rad
