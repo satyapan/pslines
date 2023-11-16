@@ -111,7 +111,7 @@ class get_horizon:
         return factor*self.factor_cosmo*kper_list
     
     def get_horizon_full(self, kper_list):    
-        factor = (1+np.sin(abs(self.lat)+abs(self.dec0)))/(np.sin(abs(self.dec0)-(np.pi/2-abs(self.lat))))
+        factor = (1+np.sin(abs(self.lat+self.dec0)))/(-np.cos(self.lat+self.dec0))
         return factor*self.factor_cosmo*kper_list
     
     def get_horizon_flat(self, kper_list):
