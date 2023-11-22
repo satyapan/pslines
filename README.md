@@ -20,7 +20,7 @@ Arguments
 
 #### Step 2: Plot horizon line
 ```
-horizon.plot(kper_list, ax=ax, kind='lst', utc=(utc_start, utc_end), date=date)
+horizon.plot(kper_list, ax=ax, kind='lst', utc=utc_start, duration=duration, date=date)
 ```
 Arguments:  
 - kper_list (array): 1D Array containing the k_per values for which horizon line is plotted.  
@@ -52,7 +52,7 @@ Arguments:
 
 #### Step 2: Plot source line
 ```
-source.plot(kper_list, ax=ax, kind='lst', utc=(utc_start,utc_end), date=date)
+source.plot(kper_list, ax=ax, kind='lst', utc=utc_start, duration=duration, date=date)
 ```
 Arguments:  
 - kper_list (array): 1D Array containing the k_per values for which horizon line is plotted.  
