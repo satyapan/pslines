@@ -39,7 +39,7 @@ def angular_distance(ra1, dec1, ra2, dec2):
     dlon = ra2 - ra1
     dlat = dec2 - dec1
     a = np.sin(dlat/2)**2+np.cos(dec1)*np.cos(dec2)*np.sin(dlon/2)**2
-    angle= 2 * np.arctan(np.sqrt(a)/np.sqrt(1-a))
+    angle = 2 * np.arctan(np.sqrt(a)/np.sqrt(1-a))
     return angle
 
 class get_horizon:
@@ -217,7 +217,7 @@ class get_source:
     
     def get_factor_lst(self, lst):
         return ((np.sin(lst-self.ra)*np.cos(self.dec) - np.sin(lst-self.ra0)*np.cos(self.dec0))**2 + (np.sin(self.lat)*np.cos(self.dec)*np.cos(lst-self.ra) - np.sin(self.lat)*np.cos(self.dec0)*np.cos(lst-self.ra0) - np.sin(self.dec)*np.cos(self.lat) + np.sin(self.dec0)*np.cos(self.lat))**2)/np.sqrt((np.sin(lst-self.ra)*np.cos(self.dec) - np.sin(lst-self.ra0)*np.cos(self.dec0))**2 - ((np.sin(lst-self.ra)*np.cos(self.dec) - np.sin(lst-self.ra0)*np.cos(self.dec0))*np.sin(lst-self.ra0)*np.cos(self.dec0) + (np.sin(self.lat)*np.cos(self.dec0)*np.cos(lst-self.ra0) - np.sin(self.dec0)*np.cos(self.lat))*(np.sin(self.lat)*np.cos(self.dec)*np.cos(lst-self.ra) - np.sin(self.lat)*np.cos(self.dec0)*np.cos(lst-self.ra0) - np.sin(self.dec)*np.cos(self.lat) + np.sin(self.dec0)*np.cos(self.lat)))**2 + (np.sin(self.lat)*np.cos(self.dec)*np.cos(lst-self.ra) - np.sin(self.lat)*np.cos(self.dec0)*np.cos(lst-self.ra0) - np.sin(self.dec)*np.cos(self.lat) + np.sin(self.dec0)*np.cos(self.lat))**2)
-    
+
     def get_factor_range(self, N=100):
         date_start = self.date
         utc_start = time_to_h(self.utc)
