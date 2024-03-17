@@ -7,9 +7,9 @@ pslines requires some standard python libraries: numpy, matplotlib, astropy, dat
 
 # Installation
 pslines can be installed using pip:
-'''
+```
 pip install pslines
-'''
+```
 
 # Documentation
 A step-by-step guide is presented in the wiki page.
