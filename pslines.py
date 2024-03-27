@@ -155,7 +155,7 @@ class get_horizon:
             kpar_list = self.get_horizon_flat(kper_list)
             kargs.setdefault('color', 'black')
             kargs.setdefault('linestyle', 'dotted')
-            kargs.setdefault('linewidth', 2)    
+            kargs.setdefault('linewidth', 3)    
         else:
             raise ValueError('kind = "lst"/"full"/"flat"')
         if kind != 'full' or abs(self.dec0) > np.pi/2-abs(self.lat):
@@ -285,7 +285,7 @@ class get_source:
                 kpar_list = self.get_source_lst(kper_list)
                 kargs.setdefault('color', 'black')
                 kargs.setdefault('linestyle', 'solid')
-                kargs.setdefault('linewidth', 2)
+                kargs.setdefault('linewidth', 3)
                 ax.plot(kper_list, kpar_list, **kargs)   
             elif duration < 0 or duration > 24:
                 raise ValueError('Duration needs to be between 0 and 24.')
@@ -293,14 +293,14 @@ class get_source:
                 kpar_list_min, kpar_list_max = self.get_source_range(kper_list)
                 kargs.setdefault('color', 'black')
                 kargs.setdefault('linestyle', 'solid')
-                kargs.setdefault('linewidth', 2)
+                kargs.setdefault('linewidth', 3)
                 ax.plot(kper_list, kpar_list_min, **kargs)
                 ax.plot(kper_list, kpar_list_max, **kargs)
         elif kind == 'flat':
             kpar_list = self.get_source_flat(kper_list)
             kargs.setdefault('color', 'black')
             kargs.setdefault('linestyle', 'dotted')
-            kargs.setdefault('linewidth', 2)    
+            kargs.setdefault('linewidth', 3)    
             ax.plot(kper_list, kpar_list, **kargs)             
         else:
             raise ValueError('kind = "lst"/flat"')
