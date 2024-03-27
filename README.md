@@ -6,9 +6,11 @@ pslines is a Python-based tool for generating and plotting horizon lines and sou
 pslines requires some standard python libraries: numpy, matplotlib, astropy, datetime.
 
 # Installation
-pslines can be installed using pip:
+pslines can be imported as a python module:
 ```
-pip install pslines
+import sys
+sys.path.append('/path/to/cloned/repo/pslines')
+from pslines import *
 ```
 
 # Documentation
