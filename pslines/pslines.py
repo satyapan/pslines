@@ -69,7 +69,7 @@ class get_horizon:
     def get_factor_lst(self, lst):
         factor = (1+np.sqrt(1-(np.sin(self.lat)*np.sin(self.dec0)+np.cos(self.lat)*np.cos(self.dec0)*np.cos(lst-self.ra0))**2))/(np.sin(self.lat)*np.sin(self.dec0)+np.cos(self.lat)*np.cos(self.dec0)*np.cos(lst-self.ra0))
         if factor < 0:
-            print('Phase Center goes below the horizon at lst = %sh!'%(np.round(lst,3)))
+            print('Phase Center goes below the horizon at lst = %0.3fh!'%(lst*12/np.pi))
         return factor
         
     def get_factor_max(self, N=100):
