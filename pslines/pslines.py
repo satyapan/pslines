@@ -158,7 +158,7 @@ class get_horizon:
             kargs.setdefault('linewidth', 3)    
         else:
             raise ValueError('kind = "lst"/"full"/"flat"')
-        if kind != 'full' or abs(self.dec0) > np.pi/2-abs(self.lat):
+        if kind != 'full' or abs(self.dec0+self.lat) > np.pi/2:
             ax.plot(kper_list, kpar_list, **kargs)
         else:
             print('Full synthesis line is vertical!')
@@ -183,7 +183,7 @@ class get_horizon:
             kpar_list = self.get_horizon_flat(kper_list)
         else:
             raise ValueError('kind = "lst"/"full"/"flat"')
-        if kind != 'full' or abs(self.dec0) > np.pi/2-abs(self.lat):
+        if kind != 'full' or abs(self.dec0+self.lat) > np.pi/2:
             return kpar_list
         else:
             print('Full synthesis line is vertical!')
