@@ -201,7 +201,7 @@ class get_source:
     ra (float): RA of source in hour
     dec (float): Declination of source in degree
     """
-    def __init__(self, freq_cen, lat, lon, ra0, dec0, ra, dec):
+    def __init__(self, freq_cen, lat, lon, ra0, dec0, ra, dec, min_alt=0):
         self.freq_cen = freq_cen
         self.z = (1.4204057e9/freq_cen)-1
         self.lat = lat*np.pi/180
@@ -210,10 +210,14 @@ class get_source:
         self.dec0 = dec0*np.pi/180
         self.ra = ra*np.pi/12
         self.dec = dec*np.pi/180
+        self.min_alt = min_alt*np.pi/180
         self.date = None
         self.utc = None
         self.duration = None
         self.factor_cosmo = ((cosmo.comoving_transverse_distance(self.z)/((const.c*(1+self.z)**2)/(cosmo.H(self.z)*1.4204057e9*u.Hz))).to(u.Hz).value)/freq_cen
+
+    def get_alt(self, lst):
+        return np.arcsin(np.sin(self.lat)*np.sin(self.dec)+np.cos(self.lat)*np.cos(self.dec)*np.cos(lst-self.ra))
     
     def get_factor_lst(self, lst):
         return ((np.sin(lst-self.ra)*np.cos(self.dec) - np.sin(lst-self.ra0)*np.cos(self.dec0))**2 + (np.sin(self.lat)*np.cos(self.dec)*np.cos(lst-self.ra) - np.sin(self.lat)*np.cos(self.dec0)*np.cos(lst-self.ra0) - np.sin(self.dec)*np.cos(self.lat) + np.sin(self.dec0)*np.cos(self.lat))**2)/np.sqrt((np.sin(lst-self.ra)*np.cos(self.dec) - np.sin(lst-self.ra0)*np.cos(self.dec0))**2 - ((np.sin(lst-self.ra)*np.cos(self.dec) - np.sin(lst-self.ra0)*np.cos(self.dec0))*np.sin(lst-self.ra0)*np.cos(self.dec0) + (np.sin(self.lat)*np.cos(self.dec0)*np.cos(lst-self.ra0) - np.sin(self.dec0)*np.cos(self.lat))*(np.sin(self.lat)*np.cos(self.dec)*np.cos(lst-self.ra) - np.sin(self.lat)*np.cos(self.dec0)*np.cos(lst-self.ra0) - np.sin(self.dec)*np.cos(self.lat) + np.sin(self.dec0)*np.cos(self.lat)))**2 + (np.sin(self.lat)*np.cos(self.dec)*np.cos(lst-self.ra) - np.sin(self.lat)*np.cos(self.dec0)*np.cos(lst-self.ra0) - np.sin(self.dec)*np.cos(self.lat) + np.sin(self.dec0)*np.cos(self.lat))**2)
@@ -231,7 +235,9 @@ class get_source:
             factors = []
             for i in utc_range:
                 lst = utc_to_lst(i, date_start, self.lat, self.lon)
-                factors.append(self.get_factor_lst(lst))
+                alt = self.get_alt(lst)
+                if alt >= self.min_alt:
+                    factors.append(self.get_factor_lst(lst))
             return np.amin(factors), np.amax(factors)
         else:
             utc_range = np.linspace(utc_start, 24+utc_end, N)
@@ -239,9 +245,12 @@ class get_source:
             for i in range(N):
                 if utc_range[i] < 24:
                     lst = utc_to_lst(utc_range[i], date_start, self.lat, self.lon)
+                    alt = self.get_alt(lst)
                 else:
                     lst = utc_to_lst(utc_range[i]-24, date_end, self.lat, self.lon)
-                factors.append(self.get_factor_lst(lst))
+                    alt = self.get_alt(lst)
+                if alt >= self.min_alt:
+                    factors.append(self.get_factor_lst(lst))
             return np.amin(factors),np.amax(factors)
     
     def get_source_range(self, kper_list):
